@@ -35,6 +35,7 @@ products(prefix) = [
 
 # Dependencies that must be installed before this package can be built
 dependencies = [
+    "https://github.com/JuliaAstro/CFITSIOBuilder/releases/download/v3.440-1/build.jl",
     "https://github.com/mweastwood/LibHealpixBuilder/releases/download/v3.31-1/build.jl"
 ]
 
