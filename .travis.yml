@@ -1,0 +1,40 @@
+language: julia
+os:
+  - linux
+julia:
+  - 0.6
+notifications:
+  email: false
+git:
+  depth: 99999999
+cache:
+  timeout: 1000
+  directories:
+    - downloads
+env:
+  global:
+    - BINARYBUILDER_DOWNLOADS_CACHE=downloads
+    - BINARYBUILDER_AUTOMATIC_APPLE=false
+sudo: required
+
+# Before anything else, get the latest versions of things
+before_script:
+  - julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryProvider.jl")'
+  - julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryBuilder.jl"); Pkg.build()'
+
+script:
+  - julia build_tarballs.jl
+
+
+deploy:
+    provider: releases
+    api_key:
+        # Note; this api_key is only valid for mweastwood/LibHealpixWrapperBuilder; you need
+        # to make your own: https://docs.travis-ci.com/user/deployment/releases/
+        secure: mq7Vnng69DW7DCGBUmhGaR4zAIl66UZZUJdrEsRLTNhUGqGcdspgzAUNpQ4HER4NefLySlTz7n6cE7W16updn4unZYojbC2RoOGxzdXEf9ThiLbD7Am6ERkHz4PUCjlTZ/9jNJdYBcTao692i0W/Fl5225bFBU+OzLdQESKeiTtu4psuo4e81biWkUiaNag2AbI16bVFWk8MBvU19yu6B8dDZtPKHb4bwYKGxS6mDAnVpK7im0ZgZTfA/XUhQ2W1a68PCAxbSAuE53ozufKQzNIh1bPoITWmKmKRnYwAhw9CtXIUZ23aC+2iEhanruwIdJ/An7k3OL6gjrMQ5pZzMp72383cBHAdnNy23nJafgKA8V0AbR8bnkjg6XsmJaRzmB6g+tfbbicsP2XGW56oZsfzhPC/aBROn/A4dQT9roE4C5qcnNqnPNZMBdn3woaetzXUp9dxqID+bVW28lr2UvC6hKMP5RdmYRn/rjgmBZgflOLhb7EGN3KoZmZNqxIb0pNUi+rRpGg5rxP2JArtYtLgMfOMOkGsFUNpC/bCX1Elq4peW7JsDO2W4QfkZnM1quJJ7zKO9M5cQqv+UzAsA4YqtjmhnTuP5XzxHKyhUPEqt84fl/71QlWVFfH71C6h5/jFkjUYn3QbKCWWpa4SxTZ9ANNpzn+qUJkBxZIQOTE=
+    file_glob: true
+    file: products/*
+    skip_cleanup: true
+    on:
+        repo: mweastwood/LibHealpixWrapperBuilder
+        tags: true
